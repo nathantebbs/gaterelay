@@ -155,11 +155,17 @@ gate-relay/
 This project demonstrates the following competencies:
 
 ✅ **Repeatable Deployment**: A third party can rebuild the system using provided documentation
+
 ✅ **Least Privilege**: Service runs as non-root with minimal capabilities
+
 ✅ **Defense in Depth**: Multiple security layers (firewall, systemd, application)
+
 ✅ **Observability**: Structured logs for all significant events
+
 ✅ **Resilience**: Automatic recovery from common failures
+
 ✅ **Documentation**: Complete architecture, deployment, and operations guides
+
 
 ### Demonstrated Failure Scenarios
 
