@@ -83,7 +83,7 @@ echo "[3/3] Validating and restarting SSH..."
 # Test configuration
 if sshd -t; then
     echo "  ✓ Configuration valid"
-    systemctl restart sshd
+    systemctl restart ssh
     echo "  ✓ SSH service restarted"
 else
     echo "  ✗ Configuration invalid, restoring backup"
