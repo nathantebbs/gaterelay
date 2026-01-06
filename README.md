@@ -124,8 +124,6 @@ gate-relay/
 ├── go.sum                  # Go module checksums
 ├── gaterelay               # Compiled binary (after build)
 ├── README.md               # This file
-├── prompts/                # Project specification
-│   └── project_1_*.md
 └── deploy/                 # Deployment artifacts
     ├── config/
     │   └── config.toml     # Example configuration
