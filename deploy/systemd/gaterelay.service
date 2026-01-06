@@ -1,0 +1,78 @@
+[Unit]
+Description=GateRelay - Secure TCP Relay Service
+Documentation=https://github.com/nathantebbs/gaterelay
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=gaterelay
+Group=gaterelay
+
+# Binary and configuration
+ExecStart=/usr/local/bin/gaterelay -config /etc/gaterelay/config.toml
+ExecReload=/bin/kill -HUP $MAINPID
+
+# Restart policy
+Restart=on-failure
+RestartSec=5s
+StartLimitInterval=60s
+StartLimitBurst=3
+
+# Graceful shutdown
+TimeoutStopSec=15s
+KillMode=mixed
+KillSignal=SIGTERM
+
+# Working directory and state
+WorkingDirectory=/var/lib/gaterelay
+StateDirectory=gaterelay
+StateDirectoryMode=0750
+
+# Hardening: Process isolation
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/gaterelay
+
+# Hardening: Kernel restrictions
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+
+# Hardening: Network restrictions
+RestrictAddressFamilies=AF_INET AF_INET6
+RestrictNamespaces=true
+
+# Hardening: Capability restrictions
+CapabilityBoundingSet=
+AmbientCapabilities=
+
+# Hardening: System call filtering
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @resources @obsolete
+
+# Hardening: Misc
+LockPersonality=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+RemoveIPC=true
+PrivateMounts=true
+ProtectHostname=true
+ProtectClock=true
+
+# Security
+MemoryDenyWriteExecute=true
+UMask=0027
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=gaterelay
+
+[Install]
+WantedBy=multi-user.target

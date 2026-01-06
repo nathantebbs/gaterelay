@@ -1,0 +1,46 @@
+# Binaries
+gaterelay
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binaries
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+prompts/
+
+# Go workspace file
+go.work
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.backup
+*.backup.*
+*.bak
+
+# Deployment artifacts (if copying to build machine)
+*.tar.gz
+*.zip
+
+# Local configuration (if testing locally)
+config.toml
+*.local
+
+# Log files
+*.log
