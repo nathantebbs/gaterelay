@@ -6,7 +6,7 @@
 
 ## Overview
 
-GateRelay is a hardened TCP relay service designed to forward connections from a public ingress port to a controlled egress target. Built as a portfolio project to demonstrate **Sr. Systems Administrator** competencies in:
+GateRelay is a hardened TCP relay service designed to forward connections from a public ingress port to a controlled egress target. Built as a portfolio project to demonstrate competencies in:
 
 - Building repeatable, production-ready systems
 - Running services with least privilege
