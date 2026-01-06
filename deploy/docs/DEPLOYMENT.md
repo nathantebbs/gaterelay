@@ -13,27 +13,27 @@ Complete step-by-step guide for deploying GateRelay on Ubuntu Server LTS or Debi
 ## Lab Network Layout Example
 
 ```
-┌─────────────────────┐
-│   Admin Workstation │
-│   192.168.1.100     │
-└──────────┬──────────┘
-           │
-           │ SSH (port 22)
-           │
-┌──────────▼──────────┐
-│   GateRelay Host    │
-│   192.168.1.10      │
-│                     │
-│   Listen: :4000     │
-│   Target: 10.0.0.20 │
-└──────────┬──────────┘
-           │
-           │ Relay (port 5000)
-           │
-┌──────────▼──────────┐
-│   Target Service    │
-│   10.0.0.20:5000    │
-└─────────────────────┘
++---------------------+
+|   Admin Workstation |
+|   192.168.1.100     |
++----------+----------+
+           |
+           | SSH (port 22)
+           |
++----------v----------+
+|   GateRelay Host    |
+|   192.168.1.10      |
+|                     |
+|   Listen: :4000     |
+|   Target: 10.0.0.20 |
++----------+----------+
+           |
+           | Relay (port 5000)
+           |
++----------v----------+
+|   Target Service    |
+|   10.0.0.20:5000    |
++---------------------+
 ```
 
 ## Deployment Steps

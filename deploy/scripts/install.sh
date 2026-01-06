@@ -35,26 +35,26 @@ fi
 echo "[1/7] Creating service user and group..."
 if ! id -u "$SERVICE_USER" >/dev/null 2>&1; then
     useradd --system --no-create-home --shell /usr/sbin/nologin "$SERVICE_USER"
-    echo "  ✓ Created user: $SERVICE_USER"
+    echo "  [OK] Created user: $SERVICE_USER"
 else
-    echo "  ✓ User already exists: $SERVICE_USER"
+    echo "  [OK] User already exists: $SERVICE_USER"
 fi
 
 echo ""
 echo "[2/7] Installing binary..."
 install -m 755 "$BINARY_NAME" "$INSTALL_DIR/$BINARY_NAME"
-echo "  ✓ Installed: $INSTALL_DIR/$BINARY_NAME"
+echo "  [OK] Installed: $INSTALL_DIR/$BINARY_NAME"
 
 echo ""
 echo "[3/7] Creating directories..."
 mkdir -p "$CONFIG_DIR"
 chmod 755 "$CONFIG_DIR"
-echo "  ✓ Created: $CONFIG_DIR"
+echo "  [OK] Created: $CONFIG_DIR"
 
 mkdir -p "$STATE_DIR"
 chown "$SERVICE_USER:$SERVICE_GROUP" "$STATE_DIR"
 chmod 750 "$STATE_DIR"
-echo "  ✓ Created: $STATE_DIR"
+echo "  [OK] Created: $STATE_DIR"
 
 echo ""
 echo "[4/7] Installing configuration..."
@@ -66,7 +66,7 @@ fi
 
 if [[ -f "deploy/config/config.toml" ]]; then
     install -m 644 deploy/config/config.toml "$CONFIG_DIR/config.toml"
-    echo "  ✓ Installed: $CONFIG_DIR/config.toml"
+    echo "  [OK] Installed: $CONFIG_DIR/config.toml"
 else
     echo "  ! Warning: deploy/config/config.toml not found"
     echo "    You will need to create $CONFIG_DIR/config.toml manually"
@@ -76,7 +76,7 @@ echo ""
 echo "[5/7] Installing systemd service..."
 if [[ -f "deploy/systemd/gaterelay.service" ]]; then
     install -m 644 deploy/systemd/gaterelay.service /etc/systemd/system/gaterelay.service
-    echo "  ✓ Installed: /etc/systemd/system/gaterelay.service"
+    echo "  [OK] Installed: /etc/systemd/system/gaterelay.service"
 else
     echo "  ! Error: deploy/systemd/gaterelay.service not found"
     exit 1
@@ -85,7 +85,7 @@ fi
 echo ""
 echo "[6/7] Reloading systemd..."
 systemctl daemon-reload
-echo "  ✓ Systemd reloaded"
+echo "  [OK] Systemd reloaded"
 
 echo ""
 echo "[7/7] Verification..."

@@ -51,7 +51,7 @@ sudo systemctl status gaterelay
 
 Expected output when healthy:
 ```
-● gaterelay.service - GateRelay - Secure TCP Relay Service
+* gaterelay.service - GateRelay - Secure TCP Relay Service
      Loaded: loaded (/etc/systemd/system/gaterelay.service; enabled; vendor preset: enabled)
      Active: active (running) since ...
        Main PID: 12345 (gaterelay)
@@ -276,7 +276,7 @@ sudo journalctl -u gaterelay -n 50 | grep "failed to connect to target"
 **Symptom:**
 ```bash
 $ sudo systemctl status gaterelay
-● gaterelay.service - GateRelay - Secure TCP Relay Service
+* gaterelay.service - GateRelay - Secure TCP Relay Service
      Active: failed (Result: signal) since ...
 ```
 

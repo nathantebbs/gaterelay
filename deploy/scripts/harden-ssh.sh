@@ -22,7 +22,7 @@ fi
 
 echo "[1/3] Backing up SSH configuration..."
 cp "$SSHD_CONFIG" "$BACKUP_FILE"
-echo "  ✓ Backup created: $BACKUP_FILE"
+echo "  [OK] Backup created: $BACKUP_FILE"
 
 echo ""
 echo "[2/3] Applying hardening settings..."
@@ -37,7 +37,7 @@ set_ssh_param() {
     else
         echo "${param} ${value}" >> "$SSHD_CONFIG"
     fi
-    echo "  ✓ Set: $param $value"
+    echo "  [OK] Set: $param $value"
 }
 
 # Disable root login
@@ -82,11 +82,11 @@ echo "[3/3] Validating and restarting SSH..."
 
 # Test configuration
 if sshd -t; then
-    echo "  ✓ Configuration valid"
+    echo "  [OK] Configuration valid"
     systemctl restart ssh
-    echo "  ✓ SSH service restarted"
+    echo "  [OK] SSH service restarted"
 else
-    echo "  ✗ Configuration invalid, restoring backup"
+    echo "  [ERROR] Configuration invalid, restoring backup"
     cp "$BACKUP_FILE" "$SSHD_CONFIG"
     exit 1
 fi
@@ -95,9 +95,9 @@ echo ""
 echo "=== SSH Hardening Complete ==="
 echo ""
 echo "Applied settings:"
-echo "  • Root login: DISABLED"
-echo "  • Password auth: DISABLED (key-only)"
-echo "  • Strong crypto: ENABLED"
+echo "  * Root login: DISABLED"
+echo "  * Password auth: DISABLED (key-only)"
+echo "  * Strong crypto: ENABLED"
 echo ""
 echo "IMPORTANT:"
 echo "  Make sure you have SSH key access configured BEFORE logging out!"

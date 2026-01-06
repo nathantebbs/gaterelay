@@ -17,68 +17,68 @@ GateRelay is a production-hardened TCP relay service designed to forward connect
 ## Component Architecture
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│                        GateRelay Host                        │
-│                                                              │
-│  ┌─────────────────────────────────────────────────────────┐ │
-│  │                    Firewall (ufw)                       │ │
-│  │  • Default deny incoming                                │ │
-│  │  • Allow SSH (restricted to admin network)              │ │
-│  │  • Allow :4000 (relay ingress)                          │ │
-│  │  • Rate limiting on SSH                                 │ │
-│  └────────────────────┬────────────────────────────────────┘ │
-│                       │                                      │
-│  ┌────────────────────▼────────────────────────────────────┐ │
-│  │              systemd Hardening Layer                    │ │
-│  │  • NoNewPrivileges=true                                 │ │
-│  │  • ProtectSystem=strict                                 │ │
-│  │  • PrivateTmp=true                                      │ │
-│  │  • RestrictAddressFamilies=AF_INET AF_INET6             │ │
-│  │  • CapabilityBoundingSet= (empty)                       │ │
-│  │  • SystemCallFilter=@system-service                     │ │
-│  └────────────────────┬────────────────────────────────────  │
-│                       │                                      │
-│  ┌────────────────────▼────────────────────────────────────┐ │
-│  │              GateRelay Application                      │ │
-│  │                                                         │ │
-│  │  ┌────────────────────────────────────────────────────┐ │ │
-│  │  │  Config Loader (TOML)                              │ │ │
-│  │  │  • Validation                                      │ │ │
-│  │  │  • Sensible defaults                               │ │ │
-│  │  └────────────────────────────────────────────────────┘ │ │
-│  │                                                         │ │
-│  │  ┌────────────────────────────────────────────────────┐ │ │
-│  │  │  TCP Listener (Ingress)                            │ │ │
-│  │  │  • Bind to listen_addr:listen_port                 │ │ │
-│  │  │  • Accept loop with context cancellation           │ │ │
-│  │  │  • Connection limit enforcement                    │ │ │
-│  │  └────────────────────────────────────────────────────┘ │ │
-│  │                                                         │ │
-│  │  ┌────────────────────────────────────────────────────┐ │ │
-│  │  │  Connection Handler (per-connection goroutine)     │ │ │
-│  │  │  • Client → Target dialer with timeout             │ │ │
-│  │  │  • Bidirectional io.Copy                           │ │ │
-│  │  │  • Idle timeout management                         │ │ │
-│  │  │  • Byte counter statistics                         │ │ │
-│  │  └────────────────────────────────────────────────────┘ │ │
-│  │                                                         │ │
-│  │  ┌────────────────────────────────────────────────────┐ │ │
-│  │  │  Signal Handler & Graceful Shutdown                │ │ │
-│  │  │  • SIGTERM/SIGINT handling                         │ │ │
-│  │  │  • Stop accepting new connections                  │ │ │
-│  │  │  • Wait for active connections (timeout)           │ │ │
-│  │  │  • Statistics logging on exit                      │ │ │
-│  │  └────────────────────────────────────────────────────┘ │ │
-│  │                                                         │ │
-│  │  ┌────────────────────────────────────────────────────┐ │ │
-│  │  │  Structured Logger (slog)                          │ │ │
-│  │  │  • JSON output to stdout → journald                │ │ │
-│  │  │  • Contextual fields (conn_id, client_addr, etc.)  │ │ │
-│  │  │  • Configurable log level                          │ │ │
-│  │  └────────────────────────────────────────────────────┘ │ │
-│  └─────────────────────────────────────────────────────────┘ │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
++--------------------------------------------------------------+
+|                        GateRelay Host                        |
+|                                                              |
+|  +-----------------------------------------------------------+|
+|  |                    Firewall (ufw)                       | |
+|  |  * Default deny incoming                                | |
+|  |  * Allow SSH (restricted to admin network)              | |
+|  |  * Allow :4000 (relay ingress)                          | |
+|  |  * Rate limiting on SSH                                 | |
+|  +-----------------------+-----------------------------------+ |
+|                          |                                    |
+|  +-----------------------v-----------------------------------+ |
+|  |              systemd Hardening Layer                    | |
+|  |  * NoNewPrivileges=true                                 | |
+|  |  * ProtectSystem=strict                                 | |
+|  |  * PrivateTmp=true                                      | |
+|  |  * RestrictAddressFamilies=AF_INET AF_INET6             | |
+|  |  * CapabilityBoundingSet= (empty)                       | |
+|  |  * SystemCallFilter=@system-service                     | |
+|  +-----------------------+-----------------------------------+ |
+|                          |                                    |
+|  +-----------------------v-----------------------------------+ |
+|  |              GateRelay Application                      | |
+|  |                                                         | |
+|  |  +------------------------------------------------------+| |
+|  |  |  Config Loader (TOML)                              | | |
+|  |  |  * Validation                                      | | |
+|  |  |  * Sensible defaults                               | | |
+|  |  +------------------------------------------------------+| |
+|  |                                                         | |
+|  |  +------------------------------------------------------+| |
+|  |  |  TCP Listener (Ingress)                            | | |
+|  |  |  * Bind to listen_addr:listen_port                 | | |
+|  |  |  * Accept loop with context cancellation           | | |
+|  |  |  * Connection limit enforcement                    | | |
+|  |  +------------------------------------------------------+| |
+|  |                                                         | |
+|  |  +------------------------------------------------------+| |
+|  |  |  Connection Handler (per-connection goroutine)     | | |
+|  |  |  * Client -> Target dialer with timeout            | | |
+|  |  |  * Bidirectional io.Copy                           | | |
+|  |  |  * Idle timeout management                         | | |
+|  |  |  * Byte counter statistics                         | | |
+|  |  +------------------------------------------------------+| |
+|  |                                                         | |
+|  |  +------------------------------------------------------+| |
+|  |  |  Signal Handler & Graceful Shutdown                | | |
+|  |  |  * SIGTERM/SIGINT handling                         | | |
+|  |  |  * Stop accepting new connections                  | | |
+|  |  |  * Wait for active connections (timeout)           | | |
+|  |  |  * Statistics logging on exit                      | | |
+|  |  +------------------------------------------------------+| |
+|  |                                                         | |
+|  |  +------------------------------------------------------+| |
+|  |  |  Structured Logger (slog)                          | | |
+|  |  |  * JSON output to stdout -> journald               | | |
+|  |  |  * Contextual fields (conn_id, client_addr, etc.)  | | |
+|  |  |  * Configurable log level                          | | |
+|  |  +------------------------------------------------------+| |
+|  +---------------------------------------------------------+ |
+|                                                              |
++--------------------------------------------------------------+
 ```
 
 ## Data Flow
@@ -87,52 +87,52 @@ GateRelay is a production-hardened TCP relay service designed to forward connect
 
 ```
 1. Client Connection
-   Client ──TCP──> GateRelay:4000
-                      │
-                      ├─ Accept()
-                      ├─ Check max_conns
-                      ├─ Log "connection accepted"
-                      └─ Spawn handler goroutine
+   Client --TCP--> GateRelay:4000
+                      |
+                      +- Accept()
+                      +- Check max_conns
+                      +- Log "connection accepted"
+                      +- Spawn handler goroutine
 
 2. Target Connection
-   GateRelay ──Dial()──> Target:5000
-                             │
-                             ├─ Apply connect_timeout
-                             ├─ On success: Log "connected to target"
-                             └─ On failure: Log error, close client
+   GateRelay --Dial()--> Target:5000
+                             |
+                             +- Apply connect_timeout
+                             +- On success: Log "connected to target"
+                             +- On failure: Log error, close client
 
 3. Bidirectional Relay
-   Client <──io.Copy──> GateRelay <──io.Copy──> Target
+   Client <--io.Copy--> GateRelay <--io.Copy--> Target
              goroutine 1            goroutine 2
-                             │
-                             ├─ Count bytes_rx (client→target)
-                             ├─ Count bytes_tx (target→client)
-                             └─ Apply idle_timeout on both sides
+                             |
+                             +- Count bytes_rx (client->target)
+                             +- Count bytes_tx (target->client)
+                             +- Apply idle_timeout on both sides
 
 4. Connection Termination
    Either side closes/EOF/timeout
-                      │
-                      ├─ Close both connections
-                      ├─ Update global counters
-                      ├─ Log "connection closed" with stats
-                      └─ Decrement active_conns
+                      |
+                      +- Close both connections
+                      +- Update global counters
+                      +- Log "connection closed" with stats
+                      +- Decrement active_conns
 ```
 
 ### Shutdown Flow
 
 ```
 SIGTERM/SIGINT received
-         │
-         ├─ Log "received shutdown signal"
-         ├─ Cancel context (stops accept loop)
-         ├─ Close listener (reject new connections)
-         │
-         ├─ Wait for all handlers to complete
-         │   (with shutdown_grace_secs timeout)
-         │
-         ├─ If timeout: Log warning, force close
-         │
-         └─ Log final statistics and exit
+         |
+         +- Log "received shutdown signal"
+         +- Cancel context (stops accept loop)
+         +- Close listener (reject new connections)
+         |
+         +- Wait for all handlers to complete
+         |   (with shutdown_grace_secs timeout)
+         |
+         +- If timeout: Log warning, force close
+         |
+         +- Log final statistics and exit
 ```
 
 ## Security Architecture
@@ -186,33 +186,33 @@ SIGTERM/SIGINT received
 
 ```
 /usr/local/bin/
-└── gaterelay                 # Service binary (built from Go)
++-- gaterelay                 # Service binary (built from Go)
 
 /etc/gaterelay/
-└── config.toml              # Service configuration
++-- config.toml              # Service configuration
 
 /etc/systemd/system/
-└── gaterelay.service        # systemd unit file
++-- gaterelay.service        # systemd unit file
 
 /var/lib/gaterelay/          # State directory (currently unused, reserved for future)
 
 /var/log/journal/            # journald logs (managed by systemd)
-└── system.journal
++-- system.journal
 
 Deployment artifacts (not deployed, for reference):
 ./deploy/
-├── config/
-│   └── config.toml          # Example configuration
-├── systemd/
-│   └── gaterelay.service    # systemd unit file
-├── scripts/
-│   ├── install.sh           # Installation automation
-│   ├── setup-firewall.sh    # Firewall configuration
-│   └── harden-ssh.sh        # SSH hardening
-└── docs/
-    ├── DEPLOYMENT.md        # Deployment guide
-    ├── OPERATIONS.md        # Operations runbook
-    └── ARCHITECTURE.md      # This document
++-- config/
+|   +-- config.toml          # Example configuration
++-- systemd/
+|   +-- gaterelay.service    # systemd unit file
++-- scripts/
+|   +-- install.sh           # Installation automation
+|   +-- setup-firewall.sh    # Firewall configuration
+|   +-- harden-ssh.sh        # SSH hardening
++-- docs/
+    +-- DEPLOYMENT.md        # Deployment guide
+    +-- OPERATIONS.md        # Operations runbook
+    +-- ARCHITECTURE.md      # This document
 ```
 
 ## Configuration Schema

@@ -117,26 +117,26 @@ sudo ss -tn | grep :4000
 
 ```
 gate-relay/
-├── main.go                 # Service entry point
-├── config.go               # Configuration parsing and validation
-├── relay.go                # Core TCP relay implementation
-├── go.mod                  # Go module definition
-├── go.sum                  # Go module checksums
-├── gaterelay               # Compiled binary (after build)
-├── README.md               # This file
-└── deploy/                 # Deployment artifacts
-    ├── config/
-    │   └── config.toml     # Example configuration
-    ├── systemd/
-    │   └── gaterelay.service   # systemd unit file
-    ├── scripts/
-    │   ├── install.sh          # Installation automation
-    │   ├── setup-firewall.sh   # Firewall configuration
-    │   └── harden-ssh.sh       # SSH hardening
-    └── docs/
-        ├── DEPLOYMENT.md       # Step-by-step deployment guide
-        ├── OPERATIONS.md       # Operations runbook
-        └── ARCHITECTURE.md     # Technical architecture
++-- main.go                 # Service entry point
++-- config.go               # Configuration parsing and validation
++-- relay.go                # Core TCP relay implementation
++-- go.mod                  # Go module definition
++-- go.sum                  # Go module checksums
++-- gaterelay               # Compiled binary (after build)
++-- README.md               # This file
++-- deploy/                 # Deployment artifacts
+    +-- config/
+    |   +-- config.toml     # Example configuration
+    +-- systemd/
+    |   +-- gaterelay.service   # systemd unit file
+    +-- scripts/
+    |   +-- install.sh          # Installation automation
+    |   +-- setup-firewall.sh   # Firewall configuration
+    |   +-- harden-ssh.sh       # SSH hardening
+    +-- docs/
+        +-- DEPLOYMENT.md       # Step-by-step deployment guide
+        +-- OPERATIONS.md       # Operations runbook
+        +-- ARCHITECTURE.md     # Technical architecture
 ```
 
 ## Documentation
@@ -152,24 +152,24 @@ gate-relay/
 
 This project demonstrates the following competencies:
 
-✅ **Repeatable Deployment**: A third party can rebuild the system using provided documentation
+[X] **Repeatable Deployment**: A third party can rebuild the system using provided documentation
 
-✅ **Least Privilege**: Service runs as non-root with minimal capabilities
+[X] **Least Privilege**: Service runs as non-root with minimal capabilities
 
-✅ **Defense in Depth**: Multiple security layers (firewall, systemd, application)
+[X] **Defense in Depth**: Multiple security layers (firewall, systemd, application)
 
-✅ **Observability**: Structured logs for all significant events
+[X] **Observability**: Structured logs for all significant events
 
-✅ **Resilience**: Automatic recovery from common failures
+[X] **Resilience**: Automatic recovery from common failures
 
-✅ **Documentation**: Complete architecture, deployment, and operations guides
+[X] **Documentation**: Complete architecture, deployment, and operations guides
 
 
 ### Demonstrated Failure Scenarios
 
-1. **Target service down** → GateRelay logs errors, continues accepting connections
-2. **Service crash (kill -9)** → systemd automatically restarts service
-3. **Port scan / unauthorized access** → Firewall blocks and logs attempts
+1. **Target service down** - GateRelay logs errors, continues accepting connections
+2. **Service crash (kill -9)** - systemd automatically restarts service
+3. **Port scan / unauthorized access** - Firewall blocks and logs attempts
 
 ## Technology Stack
 
