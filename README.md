@@ -317,12 +317,6 @@ This is a portfolio project, but suggestions and improvements are welcome!
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
-## Author
-
-**Nathan Tebbs**
-
-Portfolio project demonstrating systems administration and operational excellence for senior-level roles.
-
 ## Acknowledgments
 
 - Inspired by real-world production relay patterns
