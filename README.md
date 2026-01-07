@@ -1,6 +1,6 @@
 # GateRelay
 
-**Secure Linux TCP Relay Service** - A production-grade TCP relay demonstrating enterprise systems administration practices.
+**Secure Linux TCP Relay Service** - A production-grade TCP relay.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
